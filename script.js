@@ -2,6 +2,12 @@ const notesContainer = document.querySelector(".notes-container");
 const createBtn = document.querySelector(".btn");
 let notes = document.querySelectorAll(".input-box");
 
+
+function showNotes() {
+  notesContainer.innerHTML = localStorage.getItem("notes");
+}
+showNotes();
+
 createBtn.addEventListener("click", () => {
   let inputBox = document.createElement("p");
   inputBox.className = ("input-box");
@@ -10,3 +16,34 @@ createBtn.addEventListener("click", () => {
   img.src = "images/delete.png";
   notesContainer.appendChild(inputBox).appendChild(img);
 });
+
+
+//To update localstorage to save whatever is inside notes-container
+function updateStorage() {
+  localStorage.setItem("notes", notesContainer.innerHTML);
+}
+
+
+
+notesContainer.addEventListener("click", function (e) {
+  if (e.target.tagName === "IMG") {
+    e.target.parentElement.remove();
+    updateStorage();
+  }
+  else if (e.target.tagName === "P") {
+    notes = document.querySelector(".input-box");
+    notes.forEach(element => {
+      element.onkeyup = function () {
+        updateStorage();
+      }
+    });
+  }
+});
+
+
+document.addEventListener("keydown", event => {
+  if (event.key === "Enter") {
+    event.execCommand("insertLineBreak");
+    event.preventDefault();
+  }
+})
